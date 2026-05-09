@@ -83,8 +83,10 @@ useQuery({ queryKey: ['invoice'], queryFn, ...DEFAULT });
 
 Behaviour documented by `src/lib/queryConfig.test.ts` (14 tests).
 
-### ⏭️ Challenge A — Filter persistence
-Skipped to keep scope tight. Sketch: Zustand store keyed by route, hydrated from `sessionStorage`, syncing only a `crc32` fingerprint to the URL hash. Happy to walk through the design in a follow-up.
+### ✅ Challenge A — Filter persistence
+`src/store/createFilterStore.ts` — a Zustand factory keyed by route name, persisted to `sessionStorage`. Exposes `setFilter`, `setFilters`, `resetFilters`, `getFilters`, and a `fingerprint()` derived from a stable JSON serialisation. `syncFingerprintToUrl()` writes only a 6-char djb2 hash to `location.hash` so the URL stays short while the page remains bookmarkable.
+
+Demo: `Showcase / Challenge A — Filter Store / InvoicesWithFilterStore`. Tests: `src/store/createFilterStore.test.ts` (12 tests).
 
 ---
 
