@@ -22,10 +22,14 @@ describe('<StatusBadge />', () => {
 	});
 
 	it('applies the success color tokens for paid', () => {
-		render(<StatusBadge status='paid' />);
-		const badge = screen.getByText('Paid').parentElement!;
-		// inline style check — `bg` for paid is #ECFDF5 (success-50)
-		expect(badge.style.backgroundColor).toMatch(/(rgb\(236, 253, 245\))|#ECFDF5/i);
+		const { container } = render(<StatusBadge status='paid' />);
+		// The outermost <span> carries the inline-style backgroundColor.
+		const badge = container.firstElementChild as HTMLElement;
+		expect(badge).toBeTruthy();
+		const styleAttr = badge.getAttribute('style') ?? '';
+		// Token bg for `paid` is #ECFDF5. JSDOM may keep the hex or normalize
+		// it to `rgb(236, 253, 245)` depending on version.
+		expect(styleAttr.toLowerCase()).toMatch(/#ecfdf5|rgb\(236,\s*253,\s*245\)/);
 	});
 
 	it('renders the supplemental dot element for pulse statuses', () => {
