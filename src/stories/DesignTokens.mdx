@@ -1,0 +1,167 @@
+import { Meta } from '@storybook/blocks';
+
+<Meta title='Design Tokens' />
+
+<div style={{
+	background: 'linear-gradient(135deg, #092E44 0%, #1A4A6B 100%)',
+	color: 'white',
+	padding: '40px 32px',
+	borderRadius: 12,
+	marginBottom: 32,
+}}>
+	<div style={{ fontSize: 11, letterSpacing: 2, opacity: 0.7, marginBottom: 8 }}>FOUNDATIONS</div>
+	<h1 style={{ fontSize: 32, fontWeight: 700, lineHeight: 1.15, margin: 0 }}>Design tokens</h1>
+	<p style={{ fontSize: 14, opacity: 0.85, maxWidth: 560, marginTop: 8 }}>
+		The color, typography, spacing and radius primitives every Flexprice component is built on.
+		Swap one token here and the entire surface area updates.
+	</p>
+</div>
+
+## Color — Brand
+
+<div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 12, marginBottom: 32 }}>
+	{[
+		{ name: 'Navy 900', hex: '#092E44', use: 'Primary actions, active states, headlines' },
+		{ name: 'Navy 700', hex: '#1A4A6B', use: 'Hero gradients, hover end-stop' },
+		{ name: 'White',    hex: '#FFFFFF', use: 'Surfaces, knobs, button text' },
+		{ name: 'App',      hex: '#FAFAFA', use: 'Page background' },
+	].map((c) => (
+		<div key={c.hex} style={{ border: '1px solid #E4E4E7', borderRadius: 10, overflow: 'hidden' }}>
+			<div style={{ height: 56, backgroundColor: c.hex, borderBottom: c.hex === '#FFFFFF' ? '1px solid #E4E4E7' : 'none' }} />
+			<div style={{ padding: 12 }}>
+				<div style={{ fontSize: 12, fontWeight: 600, color: '#18181B' }}>{c.name}</div>
+				<div style={{ fontSize: 11, fontFamily: 'JetBrains Mono, monospace', color: '#71717A', marginTop: 2 }}>{c.hex}</div>
+				<div style={{ fontSize: 11, color: '#71717A', marginTop: 6, lineHeight: 1.4 }}>{c.use}</div>
+			</div>
+		</div>
+	))}
+</div>
+
+## Color — Neutrals
+
+<div style={{ display: 'grid', gridTemplateColumns: 'repeat(6, 1fr)', gap: 8, marginBottom: 32 }}>
+	{[
+		{ name: 'Zinc 50',  hex: '#FAFAFA' },
+		{ name: 'Zinc 100', hex: '#F4F4F5' },
+		{ name: 'Zinc 200', hex: '#E4E4E7' },
+		{ name: 'Zinc 300', hex: '#D4D4D8' },
+		{ name: 'Zinc 500', hex: '#71717A' },
+		{ name: 'Zinc 900', hex: '#18181B' },
+	].map((c) => (
+		<div key={c.hex} style={{ border: '1px solid #E4E4E7', borderRadius: 8, overflow: 'hidden' }}>
+			<div style={{ height: 44, backgroundColor: c.hex }} />
+			<div style={{ padding: 8 }}>
+				<div style={{ fontSize: 11, fontWeight: 600 }}>{c.name}</div>
+				<div style={{ fontSize: 10, fontFamily: 'JetBrains Mono, monospace', color: '#71717A' }}>{c.hex}</div>
+			</div>
+		</div>
+	))}
+</div>
+
+## Color — Semantic
+
+<div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 12, marginBottom: 32 }}>
+	{[
+		{ name: 'Success', dot: '#10B981', bg: '#ECFDF5', border: '#A7F3D0', text: '#065F46' },
+		{ name: 'Warning', dot: '#F59E0B', bg: '#FFFBEB', border: '#FCD34D', text: '#92400E' },
+		{ name: 'Danger',  dot: '#EF4444', bg: '#FEF2F2', border: '#FECACA', text: '#991B1B' },
+		{ name: 'Info',    dot: '#3B82F6', bg: '#EFF6FF', border: '#BFDBFE', text: '#1E40AF' },
+	].map((s) => (
+		<div key={s.name} style={{ border: '1px solid #E4E4E7', borderRadius: 10, padding: 14, backgroundColor: s.bg, borderColor: s.border }}>
+			<div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+				<span style={{ display: 'inline-block', width: 10, height: 10, borderRadius: 999, backgroundColor: s.dot }} />
+				<span style={{ fontSize: 13, fontWeight: 600, color: s.text }}>{s.name}</span>
+			</div>
+			<div style={{ fontSize: 10, color: s.text, opacity: 0.75, marginTop: 8, fontFamily: 'JetBrains Mono, monospace' }}>
+				dot {s.dot} · bg {s.bg}
+			</div>
+		</div>
+	))}
+</div>
+
+## Typography
+
+<div style={{ border: '1px solid #E4E4E7', borderRadius: 10, padding: 24, marginBottom: 32 }}>
+	{[
+		{ label: 'Display',     size: 32, weight: 700, sample: 'Pricing, made flexible.' },
+		{ label: 'H1',          size: 24, weight: 600, sample: 'Subscriptions' },
+		{ label: 'H2',          size: 18, weight: 600, sample: 'This month at a glance' },
+		{ label: 'Body',        size: 14, weight: 400, sample: 'Total revenue collected across all plans for the period.' },
+		{ label: 'Caption',     size: 12, weight: 500, sample: 'Updated 2 minutes ago' },
+		{ label: 'Mono / code', size: 13, weight: 500, sample: 'INV-2026-00142', mono: true },
+	].map((t) => (
+		<div key={t.label} style={{ display: 'flex', alignItems: 'baseline', gap: 24, padding: '12px 0', borderBottom: '1px solid #F4F4F5' }}>
+			<div style={{ width: 110, fontSize: 11, color: '#71717A', fontFamily: 'JetBrains Mono, monospace' }}>
+				{t.label} · {t.size}/{t.weight}
+			</div>
+			<div style={{
+				fontSize: t.size,
+				fontWeight: t.weight,
+				color: '#18181B',
+				fontFamily: t.mono ? 'JetBrains Mono, monospace' : undefined,
+			}}>
+				{t.sample}
+			</div>
+		</div>
+	))}
+</div>
+
+## Spacing scale
+
+<div style={{ border: '1px solid #E4E4E7', borderRadius: 10, padding: 20, marginBottom: 32 }}>
+	{[
+		{ token: '0.5', px: 2 },
+		{ token: '1',   px: 4 },
+		{ token: '2',   px: 8 },
+		{ token: '3',   px: 12 },
+		{ token: '4',   px: 16 },
+		{ token: '6',   px: 24 },
+		{ token: '8',   px: 32 },
+		{ token: '12',  px: 48 },
+	].map((s) => (
+		<div key={s.token} style={{ display: 'flex', alignItems: 'center', gap: 16, padding: '6px 0' }}>
+			<div style={{ width: 60, fontSize: 11, fontFamily: 'JetBrains Mono, monospace', color: '#71717A' }}>
+				space-{s.token}
+			</div>
+			<div style={{ width: 50, fontSize: 11, color: '#A1A1AA' }}>{s.px}px</div>
+			<div style={{ height: 16, width: s.px, backgroundColor: '#092E44', borderRadius: 2 }} />
+		</div>
+	))}
+</div>
+
+## Border radius
+
+<div style={{ display: 'grid', gridTemplateColumns: 'repeat(5, 1fr)', gap: 12, marginBottom: 32 }}>
+	{[
+		{ name: 'sm',   r: 4 },
+		{ name: 'md',   r: 6 },
+		{ name: 'lg',   r: 8 },
+		{ name: 'xl',   r: 12 },
+		{ name: 'full', r: 9999 },
+	].map((b) => (
+		<div key={b.name} style={{ border: '1px solid #E4E4E7', borderRadius: 8, padding: 16, textAlign: 'center' }}>
+			<div style={{ height: 56, background: '#092E44', borderRadius: b.r, marginBottom: 8 }} />
+			<div style={{ fontSize: 11, fontWeight: 600 }}>{b.name}</div>
+			<div style={{ fontSize: 10, color: '#71717A', fontFamily: 'JetBrains Mono, monospace' }}>{b.r === 9999 ? '∞' : `${b.r}px`}</div>
+		</div>
+	))}
+</div>
+
+## Elevation
+
+<div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 16, marginBottom: 32, padding: 24, background: '#FAFAFA', borderRadius: 8 }}>
+	{[
+		{ name: 'sm', shadow: '0 1px 2px rgba(0,0,0,0.05)' },
+		{ name: 'md', shadow: '0 4px 12px rgba(0,0,0,0.08)' },
+		{ name: 'lg', shadow: '0 8px 24px rgba(9,46,68,0.18)' },
+	].map((e) => (
+		<div key={e.name} style={{ background: 'white', borderRadius: 8, padding: 20, boxShadow: e.shadow, textAlign: 'center' }}>
+			<div style={{ fontSize: 13, fontWeight: 600 }}>shadow-{e.name}</div>
+			<div style={{ fontSize: 10, color: '#71717A', fontFamily: 'JetBrains Mono, monospace', marginTop: 4 }}>{e.shadow}</div>
+		</div>
+	))}
+</div>
+
+<div style={{ marginTop: 32, paddingTop: 16, borderTop: '1px solid #E4E4E7', fontSize: 11, color: '#71717A' }}>
+	All tokens are sourced from <code>tailwind.config.js</code> and the existing Flexprice palette. No new colors were introduced for this submission.
+</div>

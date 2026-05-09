@@ -30,7 +30,7 @@ const preview: Preview = {
 		layout: 'centered',
 		options: {
 			storySort: {
-				order: ['Welcome', 'Showcase', 'Atoms', 'Molecules', 'Organisms'],
+				order: ['Welcome', 'Design Tokens', 'Showcase', 'Atoms', 'Molecules', 'Organisms'],
 			},
 		},
 	},

@@ -84,11 +84,11 @@ const Controlled = (initialId: string, initialCollapsed = false) => {
 					footer={
 						<div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
 							<div style={{ width: 28, height: 28, borderRadius: 999, background: '#092E44', color: 'white', fontSize: 12, fontWeight: 600, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-								MA
+								VJ
 							</div>
 							<div style={{ flex: 1, minWidth: 0 }}>
-								<div style={{ fontSize: 12, fontWeight: 500, color: '#18181B' }}>Mritunjay</div>
-								<div style={{ fontSize: 11, color: '#71717A', overflow: 'hidden', textOverflow: 'ellipsis' }}>admin@flexprice.io</div>
+								<div style={{ fontSize: 12, fontWeight: 500, color: '#18181B' }}>Vasudha Jain</div>
+								<div style={{ fontSize: 11, color: '#71717A', overflow: 'hidden', textOverflow: 'ellipsis' }}>vasudha@flexprice.io</div>
 							</div>
 						</div>
 					}
