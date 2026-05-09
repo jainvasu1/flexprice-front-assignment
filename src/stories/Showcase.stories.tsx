@@ -9,7 +9,6 @@ import Card, { CardHeader } from '@/components/atoms/Card/Card';
 import PolishedToggle from '@/components/atoms/Toggle/PolishedToggle';
 import StatusBadge, { StatusKind } from '@/components/atoms/StatusBadge/StatusBadge';
 import Progress from '@/components/atoms/Progress/Progress';
-import Chip from '@/components/atoms/Chip/Chip';
 import AnimatedCounter from '@/components/atoms/AnimatedCounter/AnimatedCounter';
 import AnimatedProgress from '@/components/atoms/Progress/AnimatedProgress';
 import AnimatedStepper from '@/components/atoms/Stepper/AnimatedStepper';
@@ -28,17 +27,61 @@ type Story = StoryObj;
 
 // ---------- Invoice Row Showcase ----------
 
-const invoices: { id: string; customer: string; plan: string; amount: string; status: StatusKind; date: string }[] = [
-	{ id: 'INV-2026-0142', customer: 'Acme Corp', plan: 'Growth', amount: '$1,240.00', status: 'paid', date: 'May 9, 2026' },
-	{ id: 'INV-2026-0141', customer: 'Linear Labs', plan: 'Enterprise', amount: '$8,920.00', status: 'pending', date: 'May 9, 2026' },
-	{ id: 'INV-2026-0140', customer: 'Vercel Studios', plan: 'Pro', amount: '$420.00', status: 'processing', date: 'May 8, 2026' },
-	{ id: 'INV-2026-0139', customer: 'Notion Inc.', plan: 'Growth', amount: '$1,240.00', status: 'failed', date: 'May 8, 2026' },
-	{ id: 'INV-2026-0138', customer: 'Figma OSS', plan: 'Free', amount: '$0.00', status: 'draft', date: 'May 7, 2026' },
-	{ id: 'INV-2026-0137', customer: 'Raycast Inc.', plan: 'Pro', amount: '$420.00', status: 'refunded', date: 'May 7, 2026' },
+interface InvoiceRow {
+	id: string;
+	customer: string;
+	plan: string;
+	amount: number;
+	status: StatusKind;
+	date: string;
+	daysAgo: number;
+}
+
+const ALL_INVOICES: InvoiceRow[] = [
+	{ id: 'INV-2026-0142', customer: 'Acme Corp',         plan: 'Growth',     amount: 1240.00, status: 'paid',       date: 'May 9, 2026',  daysAgo: 0 },
+	{ id: 'INV-2026-0141', customer: 'Linear Labs',       plan: 'Enterprise', amount: 8920.00, status: 'pending',    date: 'May 9, 2026',  daysAgo: 0 },
+	{ id: 'INV-2026-0140', customer: 'Vercel Studios',    plan: 'Pro',        amount: 420.00,  status: 'processing', date: 'May 8, 2026',  daysAgo: 1 },
+	{ id: 'INV-2026-0139', customer: 'Notion Inc.',       plan: 'Growth',     amount: 1240.00, status: 'failed',     date: 'May 8, 2026',  daysAgo: 1 },
+	{ id: 'INV-2026-0138', customer: 'Figma OSS',         plan: 'Free',       amount: 0.00,    status: 'draft',      date: 'May 7, 2026',  daysAgo: 2 },
+	{ id: 'INV-2026-0137', customer: 'Raycast Inc.',      plan: 'Pro',        amount: 420.00,  status: 'refunded',   date: 'May 7, 2026',  daysAgo: 2 },
+	{ id: 'INV-2026-0125', customer: 'Stripe Inc.',       plan: 'Enterprise', amount: 12500.00,status: 'paid',       date: 'Apr 28, 2026', daysAgo: 11 },
+	{ id: 'INV-2026-0118', customer: 'Cloudflare',        plan: 'Growth',     amount: 1240.00, status: 'paid',       date: 'Apr 22, 2026', daysAgo: 17 },
+	{ id: 'INV-2026-0102', customer: 'Acme Corp',         plan: 'Growth',     amount: 1240.00, status: 'paid',       date: 'Apr 9, 2026',  daysAgo: 30 },
+	{ id: 'INV-2026-0089', customer: 'Linear Labs',       plan: 'Enterprise', amount: 8920.00, status: 'paid',       date: 'Mar 28, 2026', daysAgo: 42 },
+	{ id: 'INV-2026-0072', customer: 'Vercel Studios',    plan: 'Pro',        amount: 420.00,  status: 'paid',       date: 'Mar 12, 2026', daysAgo: 58 },
 ];
 
-export const InvoicesPage: Story = {
-	render: () => (
+const STATUS_OPTIONS: ('all' | StatusKind)[] = ['all', 'paid', 'pending', 'processing', 'failed', 'draft', 'refunded'];
+const STATUS_LABEL: Record<'all' | StatusKind, string> = {
+	all: 'All statuses', paid: 'Paid', pending: 'Pending', processing: 'Processing',
+	failed: 'Failed', draft: 'Draft', refunded: 'Refunded',
+};
+
+const DATE_OPTIONS: { value: number; label: string }[] = [
+	{ value: 7,    label: 'Last 7 days' },
+	{ value: 30,   label: 'Last 30 days' },
+	{ value: 90,   label: 'Last 90 days' },
+	{ value: 9999, label: 'All time' },
+];
+
+const InvoicesPageScene = () => {
+	const [search, setSearch] = useState('');
+	const [dateRange, setDateRange] = useState(30);
+	const [status, setStatus] = useState<'all' | StatusKind>('all');
+
+	const visible = ALL_INVOICES.filter((inv) => {
+		if (inv.daysAgo > dateRange) return false;
+		if (status !== 'all' && inv.status !== status) return false;
+		if (search) {
+			const q = search.toLowerCase();
+			if (!inv.id.toLowerCase().includes(q) && !inv.customer.toLowerCase().includes(q)) return false;
+		}
+		return true;
+	});
+
+	const total = visible.reduce((sum, inv) => sum + inv.amount, 0);
+
+	return (
 		<div style={{ background: '#FAFAFA', minHeight: '100vh', padding: 32 }}>
 			<div style={{ maxWidth: 1100, margin: '0 auto' }}>
 				{/* Header */}
@@ -46,18 +89,14 @@ export const InvoicesPage: Story = {
 					<div>
 						<div style={{ fontSize: 12, letterSpacing: 1.5, color: '#71717A', marginBottom: 4 }}>BILLING</div>
 						<h1 style={{ fontSize: 28, fontWeight: 600, color: '#092E44', margin: 0 }}>Invoices</h1>
-						<p style={{ fontSize: 14, color: '#71717A', margin: '4px 0 0 0' }}>87 issued · $12,540.00 collected this month</p>
+						<p style={{ fontSize: 14, color: '#71717A', margin: '4px 0 0 0' }}>
+							{visible.length} of {ALL_INVOICES.length} shown · ${total.toLocaleString('en-US', { minimumFractionDigits: 2 })}
+						</p>
 					</div>
 					<div style={{ display: 'flex', gap: 8 }}>
-						<Button variant='outline' size='sm' prefixIcon={<Filter size={14} />}>
-							Filter
-						</Button>
-						<Button variant='outline' size='sm' prefixIcon={<Download size={14} />}>
-							Export
-						</Button>
-						<CtaButton size='sm' icon={<Plus size={14} />}>
-							New invoice
-						</CtaButton>
+						<Button variant='outline' size='sm' prefixIcon={<Filter size={14} />}>Filter</Button>
+						<Button variant='outline' size='sm' prefixIcon={<Download size={14} />}>Export</Button>
+						<CtaButton size='sm' icon={<Plus size={14} />}>New invoice</CtaButton>
 					</div>
 				</div>
 
@@ -66,20 +105,62 @@ export const InvoicesPage: Story = {
 					<div style={{ flex: 1, position: 'relative' }}>
 						<Search size={16} style={{ position: 'absolute', left: 12, top: '50%', transform: 'translateY(-50%)', color: '#A1A1AA' }} />
 						<input
+							value={search}
+							onChange={(e) => setSearch(e.target.value)}
 							placeholder='Search invoices, customers...'
 							style={{
-								width: '100%',
-								padding: '10px 12px 10px 38px',
-								border: '1px solid #E4E4E7',
-								borderRadius: 8,
-								fontSize: 14,
-								outline: 'none',
-								background: 'white',
+								width: '100%', padding: '10px 12px 10px 38px',
+								border: '1px solid #E4E4E7', borderRadius: 8,
+								fontSize: 14, outline: 'none', background: 'white',
 							}}
 						/>
 					</div>
-					<Chip label='Last 30 days' variant='info' />
-					<Chip label='All statuses' variant='default' />
+
+					{/* Date range select */}
+					<select
+						value={dateRange}
+						onChange={(e) => setDateRange(parseInt(e.target.value, 10))}
+						style={{
+							padding: '0 36px 0 12px', height: 40,
+							border: '1px solid #E4E4E7', borderRadius: 8,
+							background: 'white', fontSize: 13, color: '#18181B',
+							cursor: 'pointer', appearance: 'none',
+							backgroundImage: 'url("data:image/svg+xml;utf8,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%2212%22 height=%2212%22 viewBox=%220 0 24 24%22 fill=%22none%22 stroke=%22%2371717A%22 stroke-width=%222%22 stroke-linecap=%22round%22 stroke-linejoin=%22round%22><polyline points=%226 9 12 15 18 9%22/></svg>")',
+							backgroundRepeat: 'no-repeat', backgroundPosition: 'right 12px center',
+						}}>
+						{DATE_OPTIONS.map((o) => (
+							<option key={o.value} value={o.value}>{o.label}</option>
+						))}
+					</select>
+
+					{/* Status select */}
+					<select
+						value={status}
+						onChange={(e) => setStatus(e.target.value as 'all' | StatusKind)}
+						style={{
+							padding: '0 36px 0 12px', height: 40,
+							border: '1px solid #E4E4E7', borderRadius: 8,
+							background: 'white', fontSize: 13, color: '#18181B',
+							cursor: 'pointer', appearance: 'none',
+							backgroundImage: 'url("data:image/svg+xml;utf8,<svg xmlns=%22http://www.w3.org/2000/svg%22 width=%2212%22 height=%2212%22 viewBox=%220 0 24 24%22 fill=%22none%22 stroke=%22%2371717A%22 stroke-width=%222%22 stroke-linecap=%22round%22 stroke-linejoin=%22round%22><polyline points=%226 9 12 15 18 9%22/></svg>")',
+							backgroundRepeat: 'no-repeat', backgroundPosition: 'right 12px center',
+						}}>
+						{STATUS_OPTIONS.map((s) => (
+							<option key={s} value={s}>{STATUS_LABEL[s]}</option>
+						))}
+					</select>
+
+					{(search || status !== 'all' || dateRange !== 30) && (
+						<button
+							onClick={() => { setSearch(''); setStatus('all'); setDateRange(30); }}
+							style={{
+								height: 40, padding: '0 12px', border: '1px solid #E4E4E7',
+								borderRadius: 8, background: 'white', fontSize: 12, color: '#71717A',
+								cursor: 'pointer',
+							}}>
+							Reset
+						</button>
+					)}
 				</div>
 
 				{/* Table */}
@@ -91,12 +172,8 @@ export const InvoicesPage: Story = {
 									<th
 										key={h}
 										style={{
-											padding: '12px 16px',
-											fontWeight: 500,
-											color: '#71717A',
-											fontSize: 12,
-											letterSpacing: 0.5,
-											textTransform: 'uppercase',
+											padding: '12px 16px', fontWeight: 500, color: '#71717A',
+											fontSize: 12, letterSpacing: 0.5, textTransform: 'uppercase',
 											borderBottom: '1px solid #E4E4E7',
 										}}>
 										{h}
@@ -105,19 +182,21 @@ export const InvoicesPage: Story = {
 							</tr>
 						</thead>
 						<tbody>
-							{invoices.map((inv, i) => (
+							{visible.map((inv, i) => (
 								<motion.tr
 									key={inv.id}
-									initial={{ opacity: 0, y: 8 }}
+									initial={{ opacity: 0, y: 4 }}
 									animate={{ opacity: 1, y: 0 }}
-									transition={{ delay: i * 0.04, duration: 0.3, ease: 'easeOut' }}
-									style={{ borderBottom: i === invoices.length - 1 ? 'none' : '1px solid #F4F4F5' }}>
+									transition={{ delay: Math.min(i * 0.03, 0.3), duration: 0.25 }}
+									style={{ borderBottom: i === visible.length - 1 ? 'none' : '1px solid #F4F4F5' }}>
 									<td style={{ padding: '14px 16px', fontFamily: 'JetBrains Mono, monospace', color: '#092E44', fontWeight: 500 }}>
 										{inv.id}
 									</td>
 									<td style={{ padding: '14px 16px', color: '#18181B', fontWeight: 500 }}>{inv.customer}</td>
 									<td style={{ padding: '14px 16px', color: '#71717A' }}>{inv.plan}</td>
-									<td style={{ padding: '14px 16px', color: '#18181B', fontFamily: 'JetBrains Mono, monospace' }}>{inv.amount}</td>
+									<td style={{ padding: '14px 16px', color: '#18181B', fontFamily: 'JetBrains Mono, monospace' }}>
+										${inv.amount.toLocaleString('en-US', { minimumFractionDigits: 2 })}
+									</td>
 									<td style={{ padding: '14px 16px' }}>
 										<StatusBadge status={inv.status} />
 									</td>
@@ -129,12 +208,26 @@ export const InvoicesPage: Story = {
 									</td>
 								</motion.tr>
 							))}
+							{visible.length === 0 && (
+								<tr>
+									<td colSpan={7} style={{ padding: '48px 16px', textAlign: 'center' }}>
+										<div style={{ fontSize: 14, fontWeight: 600, color: '#18181B' }}>No invoices match your filters</div>
+										<div style={{ fontSize: 12, color: '#71717A', marginTop: 4 }}>
+											Try widening the date range or clearing the status filter.
+										</div>
+									</td>
+								</tr>
+							)}
 						</tbody>
 					</table>
 				</Card>
 			</div>
 		</div>
-	),
+	);
+};
+
+export const InvoicesPage: Story = {
+	render: () => <InvoicesPageScene />,
 };
 
 // ---------- Billing Card Showcase ----------
