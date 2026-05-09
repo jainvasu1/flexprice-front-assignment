@@ -21,7 +21,7 @@ const meta = {
 } satisfies Meta<typeof AnimatedProgress>;
 
 export default meta;
-type Story = StoryObj<typeof meta>;
+type Story = StoryObj<typeof AnimatedProgress>;
 
 export const Default: Story = {
 	args: { value: 42, label: 'API calls' },

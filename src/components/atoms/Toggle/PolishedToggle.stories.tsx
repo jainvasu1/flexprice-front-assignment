@@ -28,7 +28,7 @@ const meta = {
 } satisfies Meta<typeof PolishedToggle>;
 
 export default meta;
-type Story = StoryObj<typeof meta>;
+type Story = StoryObj<typeof PolishedToggle>;
 
 const Controlled = (args: React.ComponentProps<typeof PolishedToggle>) => {
 	const [on, setOn] = useState(args.checked ?? false);

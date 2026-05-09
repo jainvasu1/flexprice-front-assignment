@@ -16,7 +16,7 @@ const meta = {
 } satisfies Meta<typeof AnimatedCheckbox>;
 
 export default meta;
-type Story = StoryObj<typeof meta>;
+type Story = StoryObj<typeof AnimatedCheckbox>;
 
 const Controlled = (args: React.ComponentProps<typeof AnimatedCheckbox>) => {
 	const [checked, setChecked] = useState(args.checked ?? false);

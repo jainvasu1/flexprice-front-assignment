@@ -14,7 +14,7 @@ const meta = {
 } satisfies Meta<typeof AnimatedStepper>;
 
 export default meta;
-type Story = StoryObj<typeof meta>;
+type Story = StoryObj<typeof AnimatedStepper>;
 
 const planSteps = [
 	{ label: 'Basic info', hint: 'Name & description' },

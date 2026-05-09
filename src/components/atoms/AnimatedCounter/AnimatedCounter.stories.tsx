@@ -21,7 +21,7 @@ const meta = {
 } satisfies Meta<typeof AnimatedCounter>;
 
 export default meta;
-type Story = StoryObj<typeof meta>;
+type Story = StoryObj<typeof AnimatedCounter>;
 
 export const Default: Story = {
 	args: { value: 12540, label: 'Total revenue', prefix: '$', decimals: 2 },
